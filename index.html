@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tanque de Octubre 2026</title>
+<meta name="description" content="Ejercicio académico: si toda la lluvia de octubre de 2026 de las 32 capitales cayera en un solo tanque, ¿cuánto aporta cada una? Compare ciudades. Datos: IDEAM.">
+<meta property="og:type" content="website"><meta property="og:locale" content="es_CO">
+<meta property="og:title" content="Tanque de octubre 2026: ¿dónde llovió más en las capitales de Colombia?"><meta property="og:description" content="Ejercicio académico: si toda la lluvia de octubre de 2026 de las 32 capitales cayera en un solo tanque, ¿cuánto aporta cada una? Compare ciudades. Datos: IDEAM.">
+<meta property="og:url" content="https://chriseuska.github.io/tanque-octubre-2026/"><meta property="og:image" content="https://chriseuska.github.io/tanque-octubre-2026/tarjeta.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Tanque de octubre 2026: ¿dónde llovió más en las capitales de Colombia?">
+<meta name="twitter:description" content="Ejercicio académico: si toda la lluvia de octubre de 2026 de las 32 capitales cayera en un solo tanque, ¿cuánto aporta cada una? Compare ciudades. Datos: IDEAM."><meta name="twitter:image" content="https://chriseuska.github.io/tanque-octubre-2026/tarjeta.png">
+<style>body{margin:0}</style></head><body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: banner fijo de contexto, comparador de dos tanques, tanque único 100% con ranking al lado */
+:root{
+  --bg:#f3f6f8; --panel:#ffffff; --fg:#14232e; --muted:#566b79; --line:#d5dfe6;
+  --water:#1f7fb8; --water2:#8cc7e6; --accent:#0b4f7a; --warn-bg:#fff4d6; --warn-fg:#5c4300; --warn-line:#e6c766;
+  --glass:#eaf1f5;
+  --font-d:'Fraunces',Georgia,serif; --font-b:'IBM Plex Sans',system-ui,sans-serif; --font-m:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1820; --panel:#142630; --fg:#e4eef4; --muted:#93aab8; --line:#26404e;
+  --water:#3da5de; --water2:#1b5c82; --accent:#7cc4ee; --warn-bg:#3a2f0e; --warn-fg:#f1dca0; --warn-line:#7a6320; --glass:#1a303c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1820; --panel:#142630; --fg:#e4eef4; --muted:#93aab8; --line:#26404e;
+  --water:#3da5de; --water2:#1b5c82; --accent:#7cc4ee; --warn-bg:#3a2f0e; --warn-fg:#f1dca0; --warn-line:#7a6320; --glass:#1a303c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-b);line-height:1.5;
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--font-d);font-size:clamp(26px,5vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--font-d);font-size:22px;margin:0;text-wrap:balance}
+p{margin:0}
+.banner{background:var(--warn-bg);color:var(--warn-fg);border:1px solid var(--warn-line);border-radius:6px;padding:12px 14px;font-size:14px}
+.banner b{font-weight:600}
+.tag{font-family:var(--font-m);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:14px;padding:8px 14px;border:0;background:transparent;color:var(--fg);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+button:focus-visible,select:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{font-size:13px;color:var(--muted)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.col{display:flex;flex-direction:column;gap:8px;align-items:center;min-width:0}
+select{font:inherit;font-size:15px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);width:100%;max-width:260px}
+.big{font-family:var(--font-m);font-variant-numeric:tabular-nums;font-size:26px;font-weight:500}
+.sub{font-size:13px;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.verdict{background:var(--glass);border-radius:6px;padding:12px 14px;font-size:15px;text-wrap:balance}
+svg{max-width:100%;height:auto;display:block}
+.tx{fill:var(--muted);font-family:var(--font-m);font-size:11px}
+.single{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:20px;align-items:start}
+.list{display:flex;flex-direction:column;gap:2px;min-width:0}
+.row{display:grid;grid-template-columns:22px minmax(80px,1.1fr) 2fr 54px;gap:8px;align-items:center;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:13px}
+.row:hover,.row.hl{background:var(--glass)}
+.row.selA,.row.selB{outline:1.5px solid var(--accent)}
+.row .n{font-family:var(--font-m);color:var(--muted);font-size:11px}
+.row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .bar{height:10px;background:var(--glass);border-radius:2px;position:relative}
+.row .bar i{position:absolute;inset:0 auto 0 0;border-radius:2px;background:var(--water)}
+.row .pc{font-family:var(--font-m);font-variant-numeric:tabular-nums;text-align:right}
+.tip{position:fixed;pointer-events:none;background:var(--fg);color:var(--bg);padding:6px 9px;border-radius:5px;font-size:12px;z-index:5;max-width:230px}
+ul.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
+.themebtn{align-self:flex-start}
+@media (max-width:640px){
+  .single{grid-template-columns:1fr}
+  .row{grid-template-columns:20px 1fr 48px}.row .bar{display:none}
+  .big{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.water{transition:y .6s ease,height .6s ease}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <span class="tag">Análisis de octubre de 2026 · 32 ciudades capitales</span>
+    <span class="hint" style="font-size:14px">Realizado por <b>Christian Euscátegui</b>, Ing. MSc en Meteorología · Datos: IDEAM</span>
+    <h1>Si toda la lluvia de octubre cayera en un solo tanque</h1>
+    <p class="hint" style="font-size:15px">Cada ciudad capital aporta una parte del 100 % del tanque. Compare dos ciudades y vea dónde llovió más y dónde menos.</p>
+  </header>
+
+  <div class="banner" role="note">
+    <b>Análisis de octubre de 2026 (datos hasta el 30 de octubre).</b> Es un <b>ejercicio académico</b>, aunque no corresponda a un trabajo de un establecimiento educativo. Sirve para dimensionar dónde llueve más y dónde llueve menos, una de las preguntas principales para gestionar el riesgo por eventos de origen hidrometeorológico. No hace parte del producto diario y no es un pronóstico ni una alerta.
+  </div>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+    <div class="seg" role="group" aria-label="Medida">
+      <button id="m-mm" aria-pressed="true">Lámina de lluvia (mm)</button>
+      <button id="m-vol" aria-pressed="false">Volumen sobre el municipio (hm³)</button>
+    </div>
+    <span class="hint" id="mdesc"></span>
+  </div>
+
+  <section class="panel" aria-labelledby="h-cmp">
+    <span class="tag">Comparador</span>
+    <h2 id="h-cmp">Un tanque frente a otro</h2>
+    <div class="pair">
+      <div class="col"><select id="selA" aria-label="Ciudad A"></select><div id="tA" style="width:100%;max-width:220px"></div><div class="big" id="vA"></div><div class="sub" id="sA"></div></div>
+      <div class="col"><select id="selB" aria-label="Ciudad B"></select><div id="tB" style="width:100%;max-width:220px"></div><div class="big" id="vB"></div><div class="sub" id="sB"></div></div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <p class="hint">Ambos tanques usan la misma escala, con tope en la ciudad de mayor valor del mes. Toque una ciudad de la lista inferior para asignarla alternadamente a A y B.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="h-one">
+    <span class="tag">Tanque único = 100 %</span>
+    <h2 id="h-one">Cómo se reparte el agua entre las 32 capitales</h2>
+    <div class="single">
+      <div id="big" style="width:100%;max-width:230px;margin:0 auto"></div>
+      <div class="list" id="list"></div>
+    </div>
+    <p class="hint" id="onehint"></p>
+  </section>
+
+  <section class="panel">
+    <h2>Cómo leer este ejercicio</h2>
+    <ul class="notes">
+      <li><b>Lámina (mm):</b> lluvia acumulada del 1 al 30 de octubre de 2026 en el centro urbano de cada capital, estimada por interpolación IDW (12 estaciones vecinas, p = 2) con estaciones que tienen al menos 27 de 30 días con dato. El tanque suma las láminas de las 32 ciudades (6 456 mm) y cada una es su porcentaje.</li>
+      <li><b>Volumen (hm³):</b> lámina × área del municipio. Favorece a municipios extensos y rurales de Amazonía y Orinoquía (Mitú, San José del Guaviare, Inírida), cuya área es mucho mayor que la zona urbana. Úselo para dimensionar volumen, no para comparar el casco urbano.</li>
+      <li>La lluvia varía mucho en distancias cortas. Donde la estación más cercana está lejos (Florencia 19 km, Popayán 17 km, Yopal 15 km), el valor es más incierto. El promedio de estaciones del municipio puede diferir del valor en el centro urbano (por ejemplo Santa Marta, Cúcuta y Medellín).</li>
+      <li>Datos preliminares del IDEAM (precipitación diaria). Falta el 31 de octubre; el ejercicio puede repetirse cuando se publique.</li>
+    </ul>
+  </section>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+  <button class="seg themebtn" id="copy" style="padding:8px 14px;font:inherit;font-size:13px;background:var(--panel);color:var(--fg);cursor:pointer">Copiar enlace</button>
+  <button class="seg themebtn" id="theme" style="padding:8px 14px;font:inherit;font-size:13px;background:var(--panel);color:var(--fg);cursor:pointer">Cambiar tema claro / oscuro</button></div>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+// [ciudad, mm, %mm, area km2, vol hm3, %vol, km a estación, mm prom estaciones municipio, n estaciones]
+const RAW=[["Quibdó",787.4,12.19,3507.1,2761.3,12.34,2.0,788.3,1],["Ibagué",366.4,5.68,1377.3,504.7,2.26,2.0,325.7,3],["Villavicencio",359.8,5.57,1285.9,462.7,2.07,1.0,348.7,6],["Florencia",298.2,4.62,2547.6,759.8,3.4,19.0,401.0,1],["Mitú",294.7,4.56,16215.7,4778.8,21.36,1.0,188.9,2],["Armenia",289.1,4.48,121.6,35.2,0.16,3.0,281.5,2],["Yopal",279.7,4.33,2482.9,694.4,3.1,15.0,260.7,2],["Pereira",255.0,3.95,608.2,155.1,0.69,5.0,217.6,2],["Leticia",239.6,3.71,6182.4,1481.2,6.62,2.0,239.6,1],["Sincelejo",230.2,3.57,280.0,64.5,0.29,2.0,231.9,1],["Montería",223.3,3.46,3136.6,700.3,3.13,10.0,220.6,1],["Cali",218.8,3.39,563.0,123.2,0.55,3.0,233.8,3],["Riohacha",198.6,3.08,3088.7,613.5,2.74,2.0,219.8,2],["San José del Guaviare",190.7,2.95,16768.5,3197.9,14.29,9.0,201.0,1],["Mocoa",189.2,2.93,1304.6,246.8,1.1,1.0,286.6,4],["Manizales",186.8,2.89,441.0,82.4,0.37,7.0,143.8,2],["Medellín",174.3,2.7,374.8,65.3,0.29,2.0,267.0,3],["Inírida",174.0,2.7,15970.2,2778.9,12.42,1.0,174.0,1],["Popayán",173.8,2.69,480.2,83.5,0.37,17.0,null,0],["Barranquilla",160.6,2.49,154.2,24.8,0.11,4.0,188.0,1],["San Andrés",160.1,2.48,27.1,4.3,0.02,1.0,160.1,1],["Cartagena",150.4,2.33,597.7,89.9,0.4,7.0,148.0,1],["Bogotá D.C.",140.6,2.18,1622.9,228.2,1.02,6.0,111.9,9],["Bucaramanga",111.8,1.73,152.9,17.1,0.08,7.0,null,0],["Arauca",111.6,1.73,5788.0,646.1,2.89,3.0,110.9,2],["Valledupar",108.5,1.68,4185.8,454.1,2.03,5.0,158.1,6],["Puerto Carreño",79.9,1.24,12205.0,975.3,4.36,1.0,79.9,1],["Tunja",71.2,1.1,119.7,8.5,0.04,1.0,70.8,1],["Pasto",64.7,1.0,1099.4,71.1,0.32,2.0,62.7,7],["Neiva",60.5,0.94,1269.8,76.8,0.34,3.0,56.0,4],["Santa Marta",57.2,0.89,2347.1,134.2,0.6,3.0,271.7,5],["Cúcuta",49.8,0.77,1133.5,56.5,0.25,4.0,159.5,5]];
+const C=RAW.map(r=>({n:r[0],mm:r[1],pmm:r[2],area:r[3],vol:r[4],pvol:r[5],km:r[6],avg:r[7],ne:r[8]}));
+let metric='mm', A='Quibdó', B='Cúcuta', nextSlot='A';
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+const val=c=>metric==='mm'?c.mm:c.vol;
+const pct=c=>metric==='mm'?c.pmm:c.pvol;
+const fmt=(x,d=1)=>x.toLocaleString('es-CO',{minimumFractionDigits:d,maximumFractionDigits:d});
+const unit=()=>metric==='mm'?'mm':'hm³';
+const get=n=>C.find(c=>c.n===n);
+const sorted=()=>[...C].sort((a,b)=>val(b)-val(a));
+function shade(i,n){ // más oscuro = más lluvia
+  const t=1-i/(n-1); const l=78-t*40; return `hsl(203 ${45+t*30}% ${l}%)`;
+}
+function tankSVG(frac,label){
+  const W=200,H=260,x0=30,x1=170,top=20,bot=240,h=bot-top;
+  const fh=Math.max(1.5,frac*h);
+  let ticks='';
+  const max=metric==='mm'?maxVal():maxVal();
+  for(let i=0;i<=4;i++){const y=bot-h*i/4; const v=max*i/4;
+    ticks+=`<line x1="${x1}" x2="${x1+6}" y1="${y}" y2="${y}" stroke="var(--muted)"/><text class="tx" x="${x1+9}" y="${y+4}">${fmt(v,0)}</text>`;}
+  return `<svg viewBox="0 0 ${W+20} ${H}" role="img" aria-label="${label}">
+   <rect x="${x0}" y="${top}" width="${x1-x0}" height="${h}" rx="6" fill="var(--glass)" stroke="var(--muted)" stroke-width="2"/>
+   <clipPath id="c${label.length}${Math.round(frac*1000)}"><rect x="${x0+1}" y="${top}" width="${x1-x0-2}" height="${h}" rx="5"/></clipPath>
+   <g clip-path="url(#c${label.length}${Math.round(frac*1000)})"><rect class="water" x="${x0}" y="${bot-fh}" width="${x1-x0}" height="${fh}" fill="var(--water)"/>
+   <rect x="${x0}" y="${bot-fh}" width="${x1-x0}" height="3" fill="var(--water2)"/></g>
+   ${ticks}<text class="tx" x="${x1+9}" y="${top-6}">${unit()}</text></svg>`;
+}
+function maxVal(){return Math.max(...C.map(val));}
+function renderCmp(){
+  const a=get(A), b=get(B), mx=maxVal();
+  $('tA').innerHTML=tankSVG(val(a)/mx,'Tanque de '+a.n+' '+fmt(val(a)));
+  $('tB').innerHTML=tankSVG(val(b)/mx,'Tanque de '+b.n+' '+fmt(val(b)));
+  for(const [k,c] of [['A',a],['B',b]]){
+    $('v'+k).textContent=fmt(val(c))+' '+unit();
+    $('s'+k).innerHTML=`${fmt(pct(c),2)} % del tanque único<br>puesto ${sorted().findIndex(x=>x.n===c.n)+1} de 32`;
+  }
+  const hi=val(a)>=val(b)?a:b, lo=hi===a?b:a;
+  if(a.n===b.n) $('verdict').textContent='Elija dos ciudades distintas para comparar.';
+  else $('verdict').innerHTML=`En octubre de 2026, <b>${hi.n}</b> aportó <b>${fmt(val(hi)/val(lo),1)} veces</b> lo de <b>${lo.n}</b> (${fmt(val(hi))} frente a ${fmt(val(lo))} ${unit()}). Diferencia: ${fmt(val(hi)-val(lo))} ${unit()}.`;
+  document.querySelectorAll('.row').forEach(r=>{r.classList.toggle('selA',r.dataset.n===A);r.classList.toggle('selB',r.dataset.n===B);});
+}
+function renderBig(){
+  const s=sorted(), W=200,H=520,x0=20,x1=180,top=10,bot=510,h=bot-top;
+  const tot=s.reduce((t,c)=>t+val(c),0);
+  let y=bot, segs='';
+  s.forEach((c,i)=>{const hh=val(c)/tot*h; y-=hh;
+    segs+=`<rect data-n="${c.n}" x="${x0+1}" y="${y}" width="${x1-x0-2}" height="${Math.max(hh-0.6,0.6)}" fill="${shade(s.length-1-i,s.length)}"/>`;});
+  // el mayor arriba: invertir orden de apilado
+  y=top; segs='';
+  s.forEach((c,i)=>{const hh=val(c)/tot*h;
+    segs+=`<rect class="seg1" data-n="${c.n}" x="${x0+1}" y="${y}" width="${x1-x0-2}" height="${Math.max(hh-0.6,0.6)}" fill="${shade(i,s.length)}"/>`;
+    if(hh>=15) segs+=`<text x="${(x0+x1)/2}" y="${y+hh/2+4}" text-anchor="middle" font-size="11" font-family="IBM Plex Sans,sans-serif" fill="${i<4?'#fff':'#0d1820'}" pointer-events="none">${c.n.length>16?c.n.slice(0,15)+'…':c.n} ${fmt(pct(c),1)}%</text>`;
+    y+=hh;});
+  $('big').innerHTML=`<svg viewBox="0 0 ${W} ${H+10}" role="img" aria-label="Tanque único con el reparto porcentual de las 32 ciudades">
+   <rect x="${x0}" y="${top}" width="${x1-x0}" height="${h}" rx="6" fill="none" stroke="var(--muted)" stroke-width="2"/>${segs}</svg>`;
+  $('big').querySelectorAll('.seg1').forEach(r=>{
+    r.addEventListener('mousemove',e=>tip(e,r.dataset.n));r.addEventListener('mouseleave',()=>{$('tip').hidden=true;hl(null)});
+    r.addEventListener('mouseenter',()=>hl(r.dataset.n));r.addEventListener('click',()=>pick(r.dataset.n));
+  });
+  const mx=val(s[0]);
+  $('list').innerHTML=s.map((c,i)=>`<div class="row" tabindex="0" role="button" data-n="${c.n}" aria-label="${c.n}, ${fmt(pct(c),2)} por ciento">
+    <span class="n">${i+1}</span><span class="nm">${c.n}</span><span class="bar"><i style="width:${val(c)/mx*100}%"></i></span><span class="pc">${fmt(pct(c),1)}%</span></div>`).join('');
+  $('list').querySelectorAll('.row').forEach(r=>{
+    r.addEventListener('click',()=>pick(r.dataset.n));
+    r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(r.dataset.n)}});
+    r.addEventListener('mouseenter',()=>hl(r.dataset.n));r.addEventListener('mouseleave',()=>hl(null));
+  });
+  $('onehint').textContent=metric==='mm'
+    ?`Suma de láminas: ${fmt(tot,0)} mm = 100 %. Cada franja es la lámina de una ciudad frente a ese total.`
+    :`Suma de volúmenes: ${fmt(tot,0)} hm³ = 100 %. Cada franja es lámina × área municipal; pesan los municipios extensos.`;
+}
+function hl(n){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('hl',r.dataset.n===n));
+  document.querySelectorAll('.seg1').forEach(r=>{r.style.opacity=(n&&r.dataset.n!==n)?.45:1;});}
+function tip(e,n){const c=get(n),t=$('tip');t.hidden=false;
+  t.innerHTML=`<b>${c.n}</b><br>${fmt(c.mm)} mm · ${fmt(c.vol,0)} hm³<br>${fmt(pct(c),2)} % del tanque`;
+  t.style.left=Math.min(e.clientX+12,innerWidth-240)+'px';t.style.top=(e.clientY+12)+'px';}
+function pick(n){ if(nextSlot==='A'){A=n;nextSlot='B'}else{B=n;nextSlot='A'} $('selA').value=A;$('selB').value=B;renderCmp();
+  $('h-cmp').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});}
+function setMetric(m){metric=m;$('m-mm').setAttribute('aria-pressed',m==='mm');$('m-vol').setAttribute('aria-pressed',m==='vol');
+  $('mdesc').textContent=m==='mm'?'Cuánta agua cae por metro cuadrado (compara ciudades entre sí).':'Lámina × área del municipio (dimensiona el volumen total sobre su territorio).';
+  renderBig();renderCmp();}
+const opts=[...C].sort((a,b)=>a.n.localeCompare(b.n,'es')).map(c=>`<option>${c.n}</option>`).join('');
+$('selA').innerHTML=opts;$('selB').innerHTML=opts;$('selA').value=A;$('selB').value=B;
+$('selA').onchange=e=>{A=e.target.value;renderCmp()};$('selB').onchange=e=>{B=e.target.value;renderCmp()};
+$('m-mm').onclick=()=>setMetric('mm');$('m-vol').onclick=()=>setMetric('vol');
+$('theme').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark';};
+$('copy').onclick=async()=>{const b=$('copy'),u=location.href.split('#')[0];
+  try{await navigator.clipboard.writeText(u);b.textContent='Enlace copiado'}catch(e){window.prompt&&0;b.textContent=u}
+  setTimeout(()=>{b.textContent='Copiar enlace'},2500)};
+setMetric('mm');
+</script>
+
+</body></html>
