@@ -9,21 +9,21 @@
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Tanque de octubre 2026: ¿dónde llovió más en las capitales de Colombia?">
 <meta name="twitter:description" content="Ejercicio académico: si toda la lluvia de octubre de 2026 de las 32 capitales cayera en un solo tanque, ¿cuánto aporta cada una? Compare ciudades. Datos: IDEAM."><meta name="twitter:image" content="https://chriseuska.github.io/tanque-octubre-2026/tarjeta.png">
 <style>body{margin:0}</style></head><body>
+<script>document.documentElement.setAttribute('data-theme','dark');</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: banner fijo de contexto, comparador de dos tanques, tanque único 100% con ranking al lado */
 :root{
-  --bg:#f3f6f8; --panel:#ffffff; --fg:#14232e; --muted:#566b79; --line:#d5dfe6;
-  --water:#1f7fb8; --water2:#8cc7e6; --accent:#0b4f7a; --warn-bg:#fff4d6; --warn-fg:#5c4300; --warn-line:#e6c766;
-  --glass:#eaf1f5;
+  --bg:#0d1820; --panel:#142630; --fg:#e4eef4; --muted:#93aab8; --line:#26404e;
+  --water:#3da5de; --water2:#1b5c82; --accent:#7cc4ee; --warn-bg:#3a2f0e; --warn-fg:#f1dca0; --warn-line:#7a6320;
+  --glass:#1a303c; color-scheme:dark;
   --font-d:'Fraunces',Georgia,serif; --font-b:'IBM Plex Sans',system-ui,sans-serif; --font-m:'IBM Plex Mono',ui-monospace,monospace;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0d1820; --panel:#142630; --fg:#e4eef4; --muted:#93aab8; --line:#26404e;
-  --water:#3da5de; --water2:#1b5c82; --accent:#7cc4ee; --warn-bg:#3a2f0e; --warn-fg:#f1dca0; --warn-line:#7a6320; --glass:#1a303c; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0d1820; --panel:#142630; --fg:#e4eef4; --muted:#93aab8; --line:#26404e;
-  --water:#3da5de; --water2:#1b5c82; --accent:#7cc4ee; --warn-bg:#3a2f0e; --warn-fg:#f1dca0; --warn-line:#7a6320; --glass:#1a303c; color-scheme:dark}
+/* Fondo negro por defecto; el botón del pie permite pasar a tema claro */
+:root[data-theme="light"]{
+  --bg:#f3f6f8; --panel:#ffffff; --fg:#14232e; --muted:#566b79; --line:#d5dfe6;
+  --water:#1f7fb8; --water2:#8cc7e6; --accent:#0b4f7a; --warn-bg:#fff4d6; --warn-fg:#5c4300; --warn-line:#e6c766;
+  --glass:#eaf1f5; color-scheme:light}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-b);line-height:1.5;
   padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -40,6 +40,8 @@ p{margin:0}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
 button:focus-visible,select:focus-visible,.row:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .hint{font-size:13px;color:var(--muted)}
+.why{border-left:4px solid var(--accent)}
+.why p{font-size:15px;max-width:75ch}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .col{display:flex;flex-direction:column;gap:8px;align-items:center;min-width:0}
 select{font:inherit;font-size:15px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);width:100%;max-width:260px}
@@ -75,12 +77,26 @@ ul.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     <span class="tag">Análisis de octubre de 2026 · 32 ciudades capitales</span>
     <span class="hint" style="font-size:14px">Realizado por <b>Christian Euscátegui</b>, Ing. MSc en Meteorología · Datos: IDEAM</span>
     <h1>Si toda la lluvia de octubre cayera en un solo tanque</h1>
-    <p class="hint" style="font-size:15px">Cada ciudad capital aporta una parte del 100 % del tanque. Compare dos ciudades y vea dónde llovió más y dónde menos.</p>
+    <p class="hint" style="font-size:15px">Cada ciudad capital aporta una parte del 100 % del tanque. Compare dos ciudades y vea dónde llovió más y dónde menos. <a href="#por-que" style="color:var(--accent)">¿Por qué importa en la gestión del riesgo?</a></p>
   </header>
 
   <div class="banner" role="note">
-    <b>Análisis de octubre de 2026 (datos hasta el 30 de octubre).</b> Es un <b>ejercicio académico</b>, aunque no corresponda a un trabajo de un establecimiento educativo. Sirve para dimensionar dónde llueve más y dónde llueve menos, una de las preguntas principales para gestionar el riesgo por eventos de origen hidrometeorológico. No hace parte del producto diario y no es un pronóstico ni una alerta.
+    <b>Análisis de octubre de 2026 (datos del 1 al 31 de octubre).</b> Es un <b>ejercicio académico</b>, aunque no corresponda a un trabajo de un establecimiento educativo. Sirve para dimensionar dónde llueve más y dónde llueve menos, una de las preguntas principales para gestionar el riesgo por eventos de origen hidrometeorológico. No hace parte del producto diario y no es un pronóstico ni una alerta.
   </div>
+
+
+  <section class="panel why" id="por-que" aria-labelledby="h-why">
+    <span class="tag">El vínculo con la gestión del riesgo</span>
+    <h2 id="h-why">Por qué importa saber dónde llueve más y dónde llueve menos</h2>
+    <p>En la gestión del riesgo de desastres, las cantidades de lluvia exacerban las amenazas de origen hidrometeorológico: inundaciones, crecientes y avenidas torrenciales, y movimientos en masa. Saber dónde llueve más y dónde llueve menos es el primer paso para dimensionar esas amenazas.</p>
+    <ul class="notes">
+      <li><b>Dimensionar:</b> dónde se acumula más agua y, por tanto, dónde hay más posibilidad de suelos saturados y ríos crecidos.</li>
+      <li><b>Priorizar:</b> dónde conviene concentrar el monitoreo, las alertas y la preparación.</li>
+      <li><b>Contextualizar:</b> comparar territorios para entender que cada lugar tiene su propio régimen de lluvias, y que lo habitual en uno puede ser extraordinario en otro.</li>
+    </ul>
+    <p>Este análisis puede hacerse en lo espacial (nacional, departamental e incluso municipal) y en lo temporal. Este ejercicio toma una muestra de ambos: las 32 capitales durante un mes.</p>
+    <p class="hint"><b>Ojo:</b> más lluvia no siempre significa más riesgo. El riesgo también depende de la exposición y la vulnerabilidad, de la intensidad y la duración de la lluvia, y de lo normal en cada lugar. Este ejercicio mide la cantidad acumulada del mes, no intensidades ni anomalías.</p>
+  </section>
 
   <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
     <div class="seg" role="group" aria-label="Medida">
@@ -114,21 +130,21 @@ ul.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
   <section class="panel">
     <h2>Cómo leer este ejercicio</h2>
     <ul class="notes">
-      <li><b>Lámina (mm):</b> lluvia acumulada del 1 al 30 de octubre de 2026 en el centro urbano de cada capital, estimada por interpolación IDW (12 estaciones vecinas, p = 2) con estaciones que tienen al menos 27 de 30 días con dato. El tanque suma las láminas de las 32 ciudades (6 456 mm) y cada una es su porcentaje.</li>
+      <li><b>Lámina (mm):</b> lluvia acumulada del 1 al 31 de octubre de 2026 en el centro urbano de cada capital, estimada por interpolación IDW (12 estaciones vecinas, p = 2) con estaciones que tienen al menos 28 de 31 días con dato. El tanque suma las láminas de las 32 ciudades (6 697 mm) y cada una es su porcentaje.</li>
       <li><b>Volumen (hm³):</b> lámina × área del municipio. Favorece a municipios extensos y rurales de Amazonía y Orinoquía (Mitú, San José del Guaviare, Inírida), cuya área es mucho mayor que la zona urbana. Úselo para dimensionar volumen, no para comparar el casco urbano.</li>
       <li>La lluvia varía mucho en distancias cortas. Donde la estación más cercana está lejos (Florencia 19 km, Popayán 17 km, Yopal 15 km), el valor es más incierto. El promedio de estaciones del municipio puede diferir del valor en el centro urbano (por ejemplo Santa Marta, Cúcuta y Medellín).</li>
-      <li>Datos preliminares del IDEAM (precipitación diaria). Falta el 31 de octubre; el ejercicio puede repetirse cuando se publique.</li>
+      <li>Datos preliminares del IDEAM (precipitación diaria), con el mes completo (1 al 31 de octubre de 2026). Pueden ajustarse cuando el IDEAM los revise.</li>
     </ul>
   </section>
   <div style="display:flex;gap:10px;flex-wrap:wrap">
   <button class="seg themebtn" id="copy" style="padding:8px 14px;font:inherit;font-size:13px;background:var(--panel);color:var(--fg);cursor:pointer">Copiar enlace</button>
-  <button class="seg themebtn" id="theme" style="padding:8px 14px;font:inherit;font-size:13px;background:var(--panel);color:var(--fg);cursor:pointer">Cambiar tema claro / oscuro</button></div>
+  <button class="seg themebtn" id="theme" style="padding:8px 14px;font:inherit;font-size:13px;background:var(--panel);color:var(--fg);cursor:pointer">Cambiar a tema claro / oscuro</button></div>
 </div>
 <div class="tip" id="tip" hidden></div>
 
 <script>
 // [ciudad, mm, %mm, area km2, vol hm3, %vol, km a estación, mm prom estaciones municipio, n estaciones]
-const RAW=[["Quibdó",787.4,12.19,3507.1,2761.3,12.34,2.0,788.3,1],["Ibagué",366.4,5.68,1377.3,504.7,2.26,2.0,325.7,3],["Villavicencio",359.8,5.57,1285.9,462.7,2.07,1.0,348.7,6],["Florencia",298.2,4.62,2547.6,759.8,3.4,19.0,401.0,1],["Mitú",294.7,4.56,16215.7,4778.8,21.36,1.0,188.9,2],["Armenia",289.1,4.48,121.6,35.2,0.16,3.0,281.5,2],["Yopal",279.7,4.33,2482.9,694.4,3.1,15.0,260.7,2],["Pereira",255.0,3.95,608.2,155.1,0.69,5.0,217.6,2],["Leticia",239.6,3.71,6182.4,1481.2,6.62,2.0,239.6,1],["Sincelejo",230.2,3.57,280.0,64.5,0.29,2.0,231.9,1],["Montería",223.3,3.46,3136.6,700.3,3.13,10.0,220.6,1],["Cali",218.8,3.39,563.0,123.2,0.55,3.0,233.8,3],["Riohacha",198.6,3.08,3088.7,613.5,2.74,2.0,219.8,2],["San José del Guaviare",190.7,2.95,16768.5,3197.9,14.29,9.0,201.0,1],["Mocoa",189.2,2.93,1304.6,246.8,1.1,1.0,286.6,4],["Manizales",186.8,2.89,441.0,82.4,0.37,7.0,143.8,2],["Medellín",174.3,2.7,374.8,65.3,0.29,2.0,267.0,3],["Inírida",174.0,2.7,15970.2,2778.9,12.42,1.0,174.0,1],["Popayán",173.8,2.69,480.2,83.5,0.37,17.0,null,0],["Barranquilla",160.6,2.49,154.2,24.8,0.11,4.0,188.0,1],["San Andrés",160.1,2.48,27.1,4.3,0.02,1.0,160.1,1],["Cartagena",150.4,2.33,597.7,89.9,0.4,7.0,148.0,1],["Bogotá D.C.",140.6,2.18,1622.9,228.2,1.02,6.0,111.9,9],["Bucaramanga",111.8,1.73,152.9,17.1,0.08,7.0,null,0],["Arauca",111.6,1.73,5788.0,646.1,2.89,3.0,110.9,2],["Valledupar",108.5,1.68,4185.8,454.1,2.03,5.0,158.1,6],["Puerto Carreño",79.9,1.24,12205.0,975.3,4.36,1.0,79.9,1],["Tunja",71.2,1.1,119.7,8.5,0.04,1.0,70.8,1],["Pasto",64.7,1.0,1099.4,71.1,0.32,2.0,62.7,7],["Neiva",60.5,0.94,1269.8,76.8,0.34,3.0,56.0,4],["Santa Marta",57.2,0.89,2347.1,134.2,0.6,3.0,271.7,5],["Cúcuta",49.8,0.77,1133.5,56.5,0.25,4.0,159.5,5]];
+const RAW=[["Quibdó", 793.3, 11.846, 3507.1, 2782.0, 11.769, 2.0, 794.2, 1], ["Villavicencio", 369.8, 5.522, 1285.9, 475.5, 2.012, 1.0, 364.8, 6], ["Ibagué", 366.6, 5.474, 1377.3, 504.9, 2.136, 2.0, 325.7, 3], ["Armenia", 333.2, 4.976, 121.6, 40.5, 0.171, 3.0, 294.2, 2], ["Florencia", 298.3, 4.454, 2547.6, 759.9, 3.215, 19.0, 401.0, 1], ["Mitú", 297.7, 4.445, 16215.7, 4827.4, 20.422, 1.0, 190.4, 2], ["Yopal", 280.8, 4.193, 2482.9, 697.1, 2.949, 15.0, 260.7, 2], ["Pereira", 260.6, 3.892, 608.2, 158.5, 0.671, 5.0, 220.3, 2], ["Montería", 245.7, 3.668, 3136.6, 770.5, 3.26, 10.0, 249.2, 1], ["Leticia", 244.9, 3.657, 6182.4, 1514.0, 6.405, 2.0, 244.9, 1], ["Sincelejo", 230.7, 3.445, 280.0, 64.6, 0.273, 2.0, 232.4, 1], ["Mocoa", 225.0, 3.359, 1304.6, 293.5, 1.242, 1.0, 297.7, 4], ["Cali", 222.3, 3.319, 563.0, 125.2, 0.529, 3.0, 242.6, 3], ["Inírida", 211.0, 3.151, 15970.2, 3369.7, 14.255, 1.0, 211.0, 1], ["San José del Guaviare", 207.6, 3.1, 16768.5, 3481.1, 14.727, 9.0, 221.0, 1], ["Riohacha", 199.5, 2.979, 3088.7, 616.1, 2.606, 2.0, 220.2, 2], ["Manizales", 192.2, 2.87, 441.0, 84.8, 0.359, 7.0, 145.6, 2], ["Popayán", 179.9, 2.687, 480.2, 86.4, 0.366, 17.0, null, 0], ["Medellín", 174.5, 2.606, 374.8, 65.4, 0.277, 2.0, 268.9, 3], ["San Andrés", 166.4, 2.485, 27.1, 4.5, 0.019, 1.0, 166.4, 1], ["Barranquilla", 161.0, 2.404, 154.2, 24.8, 0.105, 4.0, 188.0, 1], ["Cartagena", 150.9, 2.253, 597.7, 90.2, 0.382, 7.0, 148.2, 1], ["Bogotá D.C.", 140.8, 2.102, 1622.9, 228.5, 0.967, 6.0, 112.2, 9], ["Valledupar", 121.2, 1.809, 4185.8, 507.2, 2.146, 5.0, 178.4, 6], ["Bucaramanga", 112.1, 1.674, 152.9, 17.1, 0.072, 7.0, null, 0], ["Arauca", 111.6, 1.667, 5788.0, 646.1, 2.733, 3.0, 110.9, 2], ["Puerto Carreño", 84.3, 1.259, 12205.0, 1029.0, 4.353, 1.0, 84.3, 1], ["Tunja", 71.4, 1.066, 119.7, 8.5, 0.036, 1.0, 71.0, 1], ["Santa Marta", 68.3, 1.02, 2347.1, 160.4, 0.679, 3.0, 288.3, 5], ["Pasto", 64.9, 0.969, 1099.4, 71.3, 0.302, 2.0, 63.6, 7], ["Neiva", 60.5, 0.903, 1269.8, 76.8, 0.325, 3.0, 56.0, 4], ["Cúcuta", 49.8, 0.744, 1133.5, 56.5, 0.239, 4.0, 159.5, 5]];
 const C=RAW.map(r=>({n:r[0],mm:r[1],pmm:r[2],area:r[3],vol:r[4],pvol:r[5],km:r[6],avg:r[7],ne:r[8]}));
 let metric='mm', A='Quibdó', B='Cúcuta', nextSlot='A';
 const $=id=>document.getElementById(id);
@@ -228,7 +244,7 @@ const opts=[...C].sort((a,b)=>a.n.localeCompare(b.n,'es')).map(c=>`<option>${c.n
 $('selA').innerHTML=opts;$('selB').innerHTML=opts;$('selA').value=A;$('selB').value=B;
 $('selA').onchange=e=>{A=e.target.value;renderCmp()};$('selB').onchange=e=>{B=e.target.value;renderCmp()};
 $('m-mm').onclick=()=>setMetric('mm');$('m-vol').onclick=()=>setMetric('vol');
-$('theme').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dark?'light':'dark';};
+$('theme').onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme!=='light';r.dataset.theme=dark?'light':'dark';};
 $('copy').onclick=async()=>{const b=$('copy'),u=location.href.split('#')[0];
   try{await navigator.clipboard.writeText(u);b.textContent='Enlace copiado'}catch(e){window.prompt&&0;b.textContent=u}
   setTimeout(()=>{b.textContent='Copiar enlace'},2500)};
