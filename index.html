@@ -5,6 +5,7 @@
 <meta property="og:type" content="website"><meta property="og:locale" content="es_CO">
 <meta property="og:title" content="Tanque de octubre 2026: ¿dónde llovió más en las capitales de Colombia?"><meta property="og:description" content="Ejercicio académico: si toda la lluvia de octubre de 2026 de las 32 capitales cayera en un solo tanque, ¿cuánto aporta cada una? Compare ciudades. Datos: IDEAM.">
 <meta property="og:url" content="https://chriseuska.github.io/tanque-octubre-2026/"><meta property="og:image" content="https://chriseuska.github.io/tanque-octubre-2026/tarjeta.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Tanque de octubre 2026: ¿dónde llovió más en las capitales de Colombia?">
 <meta name="twitter:description" content="Ejercicio académico: si toda la lluvia de octubre de 2026 de las 32 capitales cayera en un solo tanque, ¿cuánto aporta cada una? Compare ciudades. Datos: IDEAM."><meta name="twitter:image" content="https://chriseuska.github.io/tanque-octubre-2026/tarjeta.png">
 <style>body{margin:0}</style></head><body>
@@ -55,7 +56,7 @@ svg{max-width:100%;height:auto;display:block}
 .row .n{font-family:var(--font-m);color:var(--muted);font-size:11px}
 .row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .bar{height:10px;background:var(--glass);border-radius:2px;position:relative}
-.row .bar i{position:absolute;inset:0 auto 0 0;border-radius:2px;background:var(--water)}
+.row .bar i{position:absolute;inset:0 auto 0 0;border-radius:2px}
 .row .pc{font-family:var(--font-m);font-variant-numeric:tabular-nums;text-align:right}
 .tip{position:fixed;pointer-events:none;background:var(--fg);color:var(--bg);padding:6px 9px;border-radius:5px;font-size:12px;z-index:5;max-width:230px}
 ul.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--muted)}
@@ -93,8 +94,8 @@ ul.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     <span class="tag">Comparador</span>
     <h2 id="h-cmp">Un tanque frente a otro</h2>
     <div class="pair">
-      <div class="col"><select id="selA" aria-label="Ciudad A"></select><div id="tA" style="width:100%;max-width:220px"></div><div class="big" id="vA"></div><div class="sub" id="sA"></div></div>
-      <div class="col"><select id="selB" aria-label="Ciudad B"></select><div id="tB" style="width:100%;max-width:220px"></div><div class="big" id="vB"></div><div class="sub" id="sB"></div></div>
+      <div class="col"><select id="selA" aria-label="Ciudad A"></select><div id="tA" style="width:100%;max-width:280px"></div><div class="big" id="vA"></div><div class="sub" id="sA"></div></div>
+      <div class="col"><select id="selB" aria-label="Ciudad B"></select><div id="tB" style="width:100%;max-width:280px"></div><div class="big" id="vB"></div><div class="sub" id="sB"></div></div>
     </div>
     <div class="verdict" id="verdict"></div>
     <p class="hint">Ambos tanques usan la misma escala, con tope en la ciudad de mayor valor del mes. Toque una ciudad de la lista inferior para asignarla alternadamente a A y B.</p>
@@ -104,7 +105,7 @@ ul.notes{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
     <span class="tag">Tanque único = 100 %</span>
     <h2 id="h-one">Cómo se reparte el agua entre las 32 capitales</h2>
     <div class="single">
-      <div id="big" style="width:100%;max-width:230px;margin:0 auto"></div>
+      <div id="big" style="width:100%;max-width:250px;margin:0 auto"></div>
       <div class="list" id="list"></div>
     </div>
     <p class="hint" id="onehint"></p>
@@ -138,28 +139,39 @@ const fmt=(x,d=1)=>x.toLocaleString('es-CO',{minimumFractionDigits:d,maximumFrac
 const unit=()=>metric==='mm'?'mm':'hm³';
 const get=n=>C.find(c=>c.n===n);
 const sorted=()=>[...C].sort((a,b)=>val(b)-val(a));
-function shade(i,n){ // más oscuro = más lluvia
-  const t=1-i/(n-1); const l=78-t*40; return `hsl(203 ${45+t*30}% ${l}%)`;
+function shade(i,n){ // franjas: azul profundo (más lluvia) a turquesa
+  const t=i/Math.max(1,n-1); return `hsl(${222-t*52} 78% ${38+t*28}%)`;
 }
-function tankSVG(frac,label){
-  const W=200,H=260,x0=30,x1=170,top=20,bot=240,h=bot-top;
-  const fh=Math.max(1.5,frac*h);
-  let ticks='';
-  const max=metric==='mm'?maxVal():maxVal();
-  for(let i=0;i<=4;i++){const y=bot-h*i/4; const v=max*i/4;
-    ticks+=`<line x1="${x1}" x2="${x1+6}" y1="${y}" y2="${y}" stroke="var(--muted)"/><text class="tx" x="${x1+9}" y="${y+4}">${fmt(v,0)}</text>`;}
-  return `<svg viewBox="0 0 ${W+20} ${H}" role="img" aria-label="${label}">
-   <rect x="${x0}" y="${top}" width="${x1-x0}" height="${h}" rx="6" fill="var(--glass)" stroke="var(--muted)" stroke-width="2"/>
-   <clipPath id="c${label.length}${Math.round(frac*1000)}"><rect x="${x0+1}" y="${top}" width="${x1-x0-2}" height="${h}" rx="5"/></clipPath>
-   <g clip-path="url(#c${label.length}${Math.round(frac*1000)})"><rect class="water" x="${x0}" y="${bot-fh}" width="${x1-x0}" height="${fh}" fill="var(--water)"/>
-   <rect x="${x0}" y="${bot-fh}" width="${x1-x0}" height="3" fill="var(--water2)"/></g>
-   ${ticks}<text class="tx" x="${x1+9}" y="${top-6}">${unit()}</text></svg>`;
+const PAL={A:['#0b3d91','#1f8fff','#7fd0ff'],B:['#c2410c','#ff8a3d','#ffd08a']};
+function cylPaths(cx,rx,ry,y1,y2){const L=cx-rx,R=cx+rx;
+  return `M${L} ${y1} A${rx} ${ry} 0 0 0 ${R} ${y1} L${R} ${y2} A${rx} ${ry} 0 0 1 ${L} ${y2} Z`;}
+function shine(id){return `<linearGradient id="${id}" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".38"/><stop offset=".22" stop-color="#fff" stop-opacity=".42"/><stop offset=".5" stop-color="#fff" stop-opacity=".02"/><stop offset=".85" stop-color="#000" stop-opacity=".25"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>`;}
+function tankSVG(frac,label,slot){
+  const cx=95,rx=70,ry=18,top=64,bot=292,h=bot-top,L=cx-rx,R=cx+rx,id='g'+slot,c=PAL[slot];
+  const f=Math.max(frac,.006), yl=bot-h*f, mx=maxVal();
+  let hoops='',ticks='';
+  for(let i=1;i<=7;i++){const y=top+h*i/8;hoops+=`<path d="M${L} ${y} A${rx} ${ry} 0 0 0 ${R} ${y}" fill="none" stroke="rgba(8,24,38,.30)" stroke-width="2.2"/>`;}
+  for(let i=0;i<=4;i++){const y=bot-h*i/4;ticks+=`<line x1="${R+6}" x2="${R+13}" y1="${y}" y2="${y}" stroke="var(--muted)" stroke-width="1.5"/><text class="tx" x="${R+17}" y="${y+4}">${fmt(mx*i/4,0)}</text>`;}
+  return `<svg viewBox="0 0 250 336" role="img" aria-label="${label}">
+  <defs><linearGradient id="${id}L" x1="0" x2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset=".5" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[0]}"/></linearGradient>${shine(id+'S')}
+  <clipPath id="${id}K"><path d="${cylPaths(cx,rx,ry,top,bot)}"/></clipPath></defs>
+  <ellipse cx="${cx}" cy="${bot+4}" rx="${rx+14}" ry="${ry+2}" fill="#000" opacity=".18"/>
+  <path d="${cylPaths(cx,rx,ry,top,bot)}" fill="var(--glass)"/>
+  <ellipse cx="${cx}" cy="${top}" rx="${rx}" ry="${ry}" fill="var(--glass)"/>
+  <g clip-path="url(#${id}K)"><rect x="${L}" y="${yl}" width="${2*rx}" height="${bot+ry-yl}" fill="url(#${id}L)"/></g>
+  <ellipse cx="${cx}" cy="${yl}" rx="${rx}" ry="${ry}" fill="${c[2]}" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>
+  <path d="${cylPaths(cx,rx,ry,top,bot)}" fill="url(#${id}S)" pointer-events="none"/>
+  ${hoops}
+  <path d="M${L} ${top} L${L} ${bot} A${rx} ${ry} 0 0 0 ${R} ${bot} L${R} ${top}" fill="none" stroke="var(--muted)" stroke-width="2.5"/>
+  <ellipse cx="${cx}" cy="${top}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--muted)" stroke-width="2.5"/>
+  <circle cx="${cx}" cy="26" r="19" fill="${c[1]}" stroke="#fff" stroke-width="3"/><text x="${cx}" y="33" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="600" font-size="22" fill="#fff">${slot}</text>
+  ${ticks}<text class="tx" x="${R+17}" y="${top-8}">${unit()}</text></svg>`;
 }
 function maxVal(){return Math.max(...C.map(val));}
 function renderCmp(){
   const a=get(A), b=get(B), mx=maxVal();
-  $('tA').innerHTML=tankSVG(val(a)/mx,'Tanque de '+a.n+' '+fmt(val(a)));
-  $('tB').innerHTML=tankSVG(val(b)/mx,'Tanque de '+b.n+' '+fmt(val(b)));
+  $('tA').innerHTML=tankSVG(val(a)/mx,'Tanque de '+a.n+' '+fmt(val(a)),'A');
+  $('tB').innerHTML=tankSVG(val(b)/mx,'Tanque de '+b.n+' '+fmt(val(b)),'B');
   for(const [k,c] of [['A',a],['B',b]]){
     $('v'+k).textContent=fmt(val(c))+' '+unit();
     $('s'+k).innerHTML=`${fmt(pct(c),2)} % del tanque único<br>puesto ${sorted().findIndex(x=>x.n===c.n)+1} de 32`;
@@ -170,26 +182,29 @@ function renderCmp(){
   document.querySelectorAll('.row').forEach(r=>{r.classList.toggle('selA',r.dataset.n===A);r.classList.toggle('selB',r.dataset.n===B);});
 }
 function renderBig(){
-  const s=sorted(), W=200,H=520,x0=20,x1=180,top=10,bot=510,h=bot-top;
+  const s=sorted(),cx=100,rx=84,ry=22,top=34,bot=520,h=bot-top,L=cx-rx,R=cx+rx;
   const tot=s.reduce((t,c)=>t+val(c),0);
-  let y=bot, segs='';
-  s.forEach((c,i)=>{const hh=val(c)/tot*h; y-=hh;
-    segs+=`<rect data-n="${c.n}" x="${x0+1}" y="${y}" width="${x1-x0-2}" height="${Math.max(hh-0.6,0.6)}" fill="${shade(s.length-1-i,s.length)}"/>`;});
-  // el mayor arriba: invertir orden de apilado
-  y=top; segs='';
-  s.forEach((c,i)=>{const hh=val(c)/tot*h;
-    segs+=`<rect class="seg1" data-n="${c.n}" x="${x0+1}" y="${y}" width="${x1-x0-2}" height="${Math.max(hh-0.6,0.6)}" fill="${shade(i,s.length)}"/>`;
-    if(hh>=15) segs+=`<text x="${(x0+x1)/2}" y="${y+hh/2+4}" text-anchor="middle" font-size="11" font-family="IBM Plex Sans,sans-serif" fill="${i<4?'#fff':'#0d1820'}" pointer-events="none">${c.n.length>16?c.n.slice(0,15)+'…':c.n} ${fmt(pct(c),1)}%</text>`;
-    y+=hh;});
-  $('big').innerHTML=`<svg viewBox="0 0 ${W} ${H+10}" role="img" aria-label="Tanque único con el reparto porcentual de las 32 ciudades">
-   <rect x="${x0}" y="${top}" width="${x1-x0}" height="${h}" rx="6" fill="none" stroke="var(--muted)" stroke-width="2"/>${segs}</svg>`;
+  let y=top,segs='',lab='';
+  s.forEach((c,i)=>{const hh=val(c)/tot*h,y1=y,y2=y+hh;
+    segs+=`<path class="seg1" data-n="${c.n}" d="M${L} ${y1} A${rx} ${ry} 0 0 0 ${R} ${y1} L${R} ${y2} A${rx} ${ry} 0 0 1 ${L} ${y2} Z" fill="${shade(i,s.length)}" stroke="rgba(255,255,255,.55)" stroke-width="1"/>`;
+    if(hh>=15) lab+=`<text x="${cx}" y="${(y1+y2)/2+ry+4}" text-anchor="middle" font-size="11" font-weight="600" font-family="IBM Plex Sans,sans-serif" fill="#fff" pointer-events="none">${c.n.length>16?c.n.slice(0,15)+'…':c.n} ${fmt(pct(c),1)}%</text>`;
+    y=y2;});
+  $('big').innerHTML=`<svg viewBox="0 0 200 566" role="img" aria-label="Tanque único con el reparto porcentual de las 32 ciudades">
+   <defs>${shine('bigS')}</defs>
+   <ellipse cx="${cx}" cy="${bot+8}" rx="${rx+10}" ry="${ry}" fill="#000" opacity=".18"/>
+   ${segs}
+   <ellipse cx="${cx}" cy="${top}" rx="${rx}" ry="${ry}" fill="${shade(0,s.length)}" stroke="#fff" stroke-opacity=".7" stroke-width="1.5"/>
+   <path d="${cylPaths(cx,rx,ry,top,bot)}" fill="url(#bigS)" pointer-events="none"/>
+   ${lab}
+   <path d="M${L} ${top} L${L} ${bot} A${rx} ${ry} 0 0 0 ${R} ${bot} L${R} ${top}" fill="none" stroke="var(--muted)" stroke-width="3" pointer-events="none"/>
+   <ellipse cx="${cx}" cy="${top}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--muted)" stroke-width="3" pointer-events="none"/></svg>`;
   $('big').querySelectorAll('.seg1').forEach(r=>{
     r.addEventListener('mousemove',e=>tip(e,r.dataset.n));r.addEventListener('mouseleave',()=>{$('tip').hidden=true;hl(null)});
     r.addEventListener('mouseenter',()=>hl(r.dataset.n));r.addEventListener('click',()=>pick(r.dataset.n));
   });
   const mx=val(s[0]);
   $('list').innerHTML=s.map((c,i)=>`<div class="row" tabindex="0" role="button" data-n="${c.n}" aria-label="${c.n}, ${fmt(pct(c),2)} por ciento">
-    <span class="n">${i+1}</span><span class="nm">${c.n}</span><span class="bar"><i style="width:${val(c)/mx*100}%"></i></span><span class="pc">${fmt(pct(c),1)}%</span></div>`).join('');
+    <span class="n">${i+1}</span><span class="nm">${c.n}</span><span class="bar"><i style="width:${val(c)/mx*100}%;background:${shade(i,s.length)}"></i></span><span class="pc">${fmt(pct(c),1)}%</span></div>`).join('');
   $('list').querySelectorAll('.row').forEach(r=>{
     r.addEventListener('click',()=>pick(r.dataset.n));
     r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(r.dataset.n)}});
