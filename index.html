@@ -165,11 +165,11 @@ h3{font-family:var(--font-d);font-size:18px;margin:6px 0 0}
     <div class="sumrow" id="an-sum"></div>
     <div class="chips" role="group" aria-label="Filtrar por condición" id="an-chips"></div>
 
-    <h3>Barriles: nivel frente a lo normal</h3>
-    <p class="hint">La línea punteada marca lo normal (100 %). Un barril lleno equivale a 200 % o más. El color sigue la escala de anomalía del IDEAM. Toque un barril para compararlo.</p>
+    <h3 id="an-h">Barriles: nivel frente a lo normal</h3>
+    <p class="hint" id="an-p"></p>
     <div class="barrels" id="an-barrels"></div>
 
-    <h3>De más seco a más lluvioso que lo normal</h3>
+    <h3 id="an-h2">De más lluvioso a más seco frente a lo normal</h3>
     <div class="axis"><div></div><div><span>0 %</span><span>100 % = normal</span><span>200 %</span></div><div></div></div>
     <div id="an-list"></div>
     <p class="hint">Las barras rayadas son ciudades sin dato confiable: la estación más cercana con normal climatológica está a más de 20 km.</p>
@@ -363,7 +363,16 @@ function renderAnSc(){
   <text x="${lx(60)}" y="${ly(700)}" class="lab" style="fill:rgb(31,162,214)">Más de lo normal ↑</text><text x="${lx(300)}" y="${ly(44)}" class="lab" style="fill:rgb(239,59,44)">Menos de lo normal ↓</text></svg>`;
   $('an-sc').querySelectorAll('.pt').forEach(p=>{p.onmousemove=e=>tipAn(e,p.dataset.n);p.onmouseleave=()=>{$('tip').hidden=true};p.onclick=()=>pick(p.dataset.n);});
 }
-function renderAnomalia(){renderChips();renderAnBarrels();renderAnList();}
+const FT={todas:['Las 32 capitales: nivel frente a lo normal','Cada barril muestra cuánto llovió en octubre comparado con lo normal. La línea punteada marca lo normal (100 %) y un barril lleno equivale a 200 % o más.'],
+exceso:['Capitales con más lluvia de lo normal','Llovió más de lo normal (más de 110 %). Cuanto más azul, mayor el exceso. La línea punteada marca lo normal (100 %).'],
+normal:['Capitales con lluvia dentro de lo normal','Llovió entre 90 % y 110 % de lo normal. El barril llega casi a la línea punteada, que marca el 100 %.'],
+deficit:['Capitales con menos lluvia de lo normal','Llovió menos del 90 % de lo normal. Cuanto más rojo, mayor el déficit. La línea punteada marca lo normal (100 %).'],
+dudoso:['Capitales sin dato confiable','La estación con normal climatológica más cercana está a más de 20 km, por eso su anomalía es solo indicativa.']};
+function renderAnHead(){const n=anList().length,f=FT[anFilter];
+  $('an-h').textContent=f[0]+(anFilter==='todas'?'':' ('+n+')');
+  $('an-p').textContent=f[1]+' El color sigue la escala de anomalía del IDEAM. Toque un barril para compararlo.';
+  $('an-h2').textContent=anFilter==='todas'?'De más lluvioso a más seco frente a lo normal':f[0]+', de mayor a menor';}
+function renderAnomalia(){renderAnHead();renderChips();renderAnBarrels();renderAnList();}
 
 renderAnSum();renderAnSc();renderAnomalia();
 setMetric('mm');
